@@ -50,12 +50,12 @@ The goal of this project is to develop a web-based Recipe Finder Application tha
 | **Task**                  | **Assigned To** | **Status** | **Date Updated** | **Notes**                        |
 |---------------------------|-----------------|------------|------------------|----------------------------------|
 | Brainstorm project ideas  | All members     | Done       | Feb 13           | Decided on Recipe Finder App.    |
-| Write project goal        | Member 1        | In progress| Feb 14           | Added goal to README.            |
-| List main features        | Member 2        | In progress| Feb 14           | Added features to README.        |
-| Create timeline           | Member 3        | In progress| Feb 14           | Added timeline to README.        |
-| Assign team roles         | Member 4        | In progress| Feb 14           | Added roles to README.           |
+| Write project goal        | All members     | In progress| Feb 14           | Added goal to README.            |
+| List main features        |All member       | In progress| Feb 14           | Added features to README.        |
+| Create timeline           | All members     | In progress| Feb 14           | Added timeline to README.        |
+| Assign team roles         | All members     | In progress| Feb 14           | Added roles to README.           |
 | Finalize project description | All members  | In progress| Feb 14           | Ready to submit.                 |
 
 
 ## Project Board
-Track our progress on the 
+Track our progress on the https://github.com/users/Dhouha-lamine/projects/1/views/1
