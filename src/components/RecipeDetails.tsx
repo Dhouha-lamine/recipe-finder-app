@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from "react";
 import { Heart, Clock, Users } from "lucide-react";
 
@@ -31,13 +32,13 @@ const RecipeDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-orange-50">
+    <div className="recipe-details">
       {/* Image with parallax effect */}
-      <div className="h-96 bg-fixed bg-cover bg-center" style={{ backgroundImage: `url(${recipe.image})` }}></div>
+      <div className="recipe-hero" style={{ backgroundImage: `url(${recipe.image})` }}></div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-orange-600 mb-2">{recipe.title}</h1>
-        <p className="text-gray-600 mb-4">{recipe.description}</p>
+      <div className="recipe-content">
+        <h1 className="recipe-details-title">{recipe.title}</h1>
+        <p className="recipe-description">{recipe.description}</p>
 
         <div className="flex items-center text-gray-600 mb-6">
           <Clock size={20} className="mr-2" />
@@ -48,25 +49,23 @@ const RecipeDetails = () => {
 
         <button
           onClick={() => setFavorite(!favorite)}
-          className={`mb-8 px-6 py-3 rounded-full text-white font-medium transition-all duration-300 ${
-            favorite ? "bg-red-500 hover:bg-red-600" : "bg-orange-500 hover:bg-orange-600"
-          }`}
+          className={`favorite-button ${favorite ? "active" : ""}`}
         >
-          <Heart size={20} className={`inline-block mr-2 ${favorite ? "fill-current" : ""}`} />
+          <Heart size={20} className={`mr-2 ${favorite ? "fill-current" : ""}`} />
           {favorite ? "Ajouté aux favoris" : "Ajouter aux favoris"}
         </button>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="recipe-details-content">
           {/* Ingredients */}
           <div>
-            <h2 className="text-2xl font-semibold text-orange-600 mb-4">Ingrédients</h2>
+            <h2 className="recipe-section-title">Ingrédients</h2>
             <ul>
               {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-center mb-2">
+                <li key={index} className="ingredient-item">
                   <input
                     type="checkbox"
                     id={`ingredient-${index}`}
-                    className="mr-2 form-checkbox text-orange-500 h-5 w-5"
+                    className="ingredient-checkbox"
                   />
                   <label htmlFor={`ingredient-${index}`} className="text-gray-700">
                     {ingredient}
@@ -78,27 +77,27 @@ const RecipeDetails = () => {
 
           {/* Steps */}
           <div>
-            <h2 className="text-2xl font-semibold text-orange-600 mb-4">Étapes de préparation</h2>
-            <ol>
+            <h2 className="recipe-section-title">Étapes de préparation</h2>
+            <ul>
               {recipe.steps.map((step, index) => (
-                <li key={index} className="mb-4">
+                <li key={index} className="step-item">
                   <button
                     onClick={() => setExpandedStep(expandedStep === index ? null : index)}
-                    className="w-full text-left"
+                    className="step-button"
                   >
-                    <span className="font-semibold text-orange-500 mr-2">{index + 1}.</span>
-                    <span className="text-gray-700">{expandedStep === index ? step : `${step.slice(0, 50)}...`}</span>
+                    <span className="step-number">{index + 1}.</span>
+                    <span className="step-text">{expandedStep === index ? step : `${step.slice(0, 50)}...`}</span>
                   </button>
                   <div
-                    className={`mt-2 pl-6 text-gray-600 transition-all duration-300 ${
-                      expandedStep === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                    className={`step-details ${
+                      expandedStep === index ? "expanded" : "collapsed"
                     }`}
                   >
                     {step}
                   </div>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
         </div>
       </div>

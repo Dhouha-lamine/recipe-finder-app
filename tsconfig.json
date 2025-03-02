@@ -1,13 +1,16 @@
 {
-    "compilerOptions": {
-      "jsx": "react",
-      "moduleResolution": "node",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true
-    },
-    "include": [
-      "src"
-    ]
-  }
-  
+  "compilerOptions": {
+    "jsx": "react",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "baseUrl": ".", // Définit la racine du projet comme base pour la résolution des modules
+    "paths": {
+      "@/lib/*": ["src/lib/*"] // Définit l'alias @ comme pointant vers src/lib
+    }
+  },
+  "include": ["src"]
+}
