@@ -1,0 +1,51 @@
+.input {
+    display: flex;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    background-color: transparent;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #111827;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  .input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #ea580c;
+    box-shadow: 0 0 0 1px #ea580c;
+  }
+  
+  .input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* For WebKit browsers (Chrome, Safari) */
+  .input::-webkit-input-placeholder {
+    color: #9ca3af;
+  }
+  
+  /* For Firefox */
+  .input::-moz-placeholder {
+    color: #9ca3af;
+    opacity: 1;
+  }
+  
+  /* For Internet Explorer */
+  .input:-ms-input-placeholder {
+    color: #9ca3af;
+  }
+  
+  /* For Edge */
+  .input::-ms-input-placeholder {
+    color: #9ca3af;
+  }
+  
+  
