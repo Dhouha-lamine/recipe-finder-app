@@ -65,7 +65,7 @@ return (
               <Checkbox
                 id="terms"
                 checked={formData.terms}
-                onCheckedChange={(checked) => setFormData({ ...formData, terms: checked as boolean })}
+                onCheckedChange={(checked:boolean) => setFormData({ ...formData, terms: checked })}
               />
               <label htmlFor="terms" className="auth-checkbox-label">
                 J'accepte les conditions d'utilisation
