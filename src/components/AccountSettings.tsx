@@ -139,7 +139,7 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
           <section>
             <button onClick={onLogout} className="logout-button">
               <LogOut className="mr-2" size={20} />
-              Se Déconnecter
+              Se Déconnecter
             </button>
           </section>
         </div>
