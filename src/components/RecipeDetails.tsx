@@ -1,4 +1,4 @@
-                                                                                                                                                                       import React from "react";
+import React from "react";
 import { useState } from "react";
 import { Heart, Clock, Users } from "lucide-react";
 
@@ -34,7 +34,7 @@ const RecipeDetails = () => {
   return (
     <div className="recipe-details">
       {/* Image with parallax effect */}
-      <div className="recipe-hero" style={{ backgroundImage: url(${recipe.image}) }}></div>
+      <div className="recipe-hero" style={{ backgroundImage:` url(${recipe.image})` }}></div>
 
       <div className="recipe-content">
         <h1 className="recipe-details-title">{recipe.title}</h1>
@@ -49,9 +49,9 @@ const RecipeDetails = () => {
 
         <button
           onClick={() => setFavorite(!favorite)}
-          className={favorite-button ${favorite ? "active" : ""}}
+          className={`favorite-button ${favorite ? "active" : ""}`}
         >
-          <Heart size={20} className={mr-2 ${favorite ? "fill-current" : ""}} />
+          <Heart size={20} className={`mr-2 ${favorite ? "fill-current" : ""}`} />
           {favorite ? "Ajouté aux favoris" : "Ajouter aux favoris"}
         </button>
 
@@ -64,10 +64,10 @@ const RecipeDetails = () => {
                 <li key={index} className="ingredient-item">
                   <input
                     type="checkbox"
-                    id={ingredient-${index}}
+                    id={`ingredient-${index}`}
                     className="ingredient-checkbox"
                   />
-                  <label htmlFor={ingredient-${index}} className="text-gray-700">
+                  <label htmlFor={`ingredient-${index}`} className="text-gray-700">
                     {ingredient}
                   </label>
                 </li>
@@ -86,7 +86,7 @@ const RecipeDetails = () => {
                     className="step-button"
                   >
                     <span className="step-number">{index + 1}.</span>
-                    <span className="step-text">{expandedStep === index ? step : ${step.slice(0, 50)}...}</span>
+                    <span className="step-text">{expandedStep === index ? step : `${step.slice(0, 50)}...`}</span>
                   </button>
                   <div
                     className={`step-details ${

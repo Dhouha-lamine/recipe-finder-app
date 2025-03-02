@@ -1,4 +1,4 @@
-                                                                                                                                                                     import React from "react";
+import React from "react";
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 
@@ -42,11 +42,11 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
     <div className="account-page">
       <div className="account-container">
         <div className="account-content">
-          <h1 className="account-title">Paramètres du Compte</h1>
+          <h1 className="account-title">Paramètres du Compte</h1>
 
           {/* Profile Edit Section */}
           <section className="account-section">
-            <h2 className="account-section-title">Édition du Profil</h2>
+            <h2 className="account-section-title">Édition du Profil</h2>
             <form onSubmit={handleProfileSubmit} className="auth-form">
               <div className="flex items-center space-x-4">
                 <img src={user.avatar} alt="Avatar" className="avatar-image" />
@@ -112,7 +112,7 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
 
           {/* Dietary Preferences Section */}
           <section className="account-section">
-            <h2 className="account-section-title">Préférences Alimentaires</h2>
+            <h2 className="account-section-title">Préférences Alimentaires</h2>
             <div className="preferences-list">
               {Object.entries(preferences).map(([key, value]) => (
                 <label key={key} className="preference-item">
@@ -124,7 +124,7 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
                     className="preference-checkbox"
                   />
                   <span className="preference-label">
-                    {key === "vegetarian" && "Végétarien"}
+                    {key === "vegetarian" && "Végétarien"}
                     {key === "vegan" && "Vegan"}
                     {key === "glutenFree" && "Sans Gluten"}
                     {key === "lactoseFree" && "Sans Lactose"}
