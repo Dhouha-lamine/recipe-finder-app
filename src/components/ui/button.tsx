@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 import "./button.css"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -29,7 +29,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       icon: "btn-icon",
     }[size]
 
-    return <Comp className={cn(baseClass, variantClass, sizeClass, className)} ref={ref} {...props} />
+    return <Comp className={cn(baseClass, variantClass, sizeClass, className || "")} ref={ref} {...props} />
   },
 )
 Button.displayName = "Button"
