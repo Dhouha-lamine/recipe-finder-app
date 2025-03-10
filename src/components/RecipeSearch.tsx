@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 import { Search, Clock, Heart } from "lucide-react";
-
+import "../styles/recipesearch.css";
 interface RecipeSearchProps {
   onRecipeClick: () => void;
 }

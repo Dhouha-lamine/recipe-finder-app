@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Heart, Clock, Users } from "lucide-react";
+import "../styles/RecipeDetails.css"
 
 const RecipeDetails = () => {
   const [favorite, setFavorite] = useState(false);
