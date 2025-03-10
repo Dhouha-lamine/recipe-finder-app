@@ -5,7 +5,7 @@ import { Chrome, Facebook } from "lucide-react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Checkbox } from "./ui/checkbox"
-import "./auth.css"
+import "../styles/Auth.css"
 
 interface AuthProps {
   mode: "login" | "register"

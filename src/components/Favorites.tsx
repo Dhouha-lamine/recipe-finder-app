@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from "react";
 import { Trash2, Share2, Grid, List, Heart } from "lucide-react";
+import "../styles/favorites.css"
 
 interface FavoritesProps {
   onRecipeClick: (id: number) => void; // Nouvelle prop pour gérer le clic sur une recette

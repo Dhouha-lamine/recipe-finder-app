@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { LogOut } from "lucide-react";
+import "../styles/AccountSettings.css";
 
 interface AccountSettingsProps {
   onLogout: () => void;
