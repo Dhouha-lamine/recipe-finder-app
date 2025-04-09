@@ -5,16 +5,23 @@ import RecipeDetails from "./components/RecipeDetails";
 import Favorites from "./components/Favorites";
 import Auth from "./components/Auth";
 import AccountSettings from "./components/AccountSettings";
-import "./App.css" 
+import "./App.css";
 
 function App() {
   const [currentView, setCurrentView] = useState<'home' | 'search' | 'details' | 'favorites' | 'auth' | 'account'>('home');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedRecipeId, setSelectedRecipeId] = useState<number | undefined>(undefined);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const goToHome = () => setCurrentView('home');
   const goToSearch = () => setCurrentView('search');
-  const goToDetails = () => setCurrentView('details');
+  const goToDetails = (recipeId?: number) => {
+    if (recipeId) {
+      setSelectedRecipeId(recipeId);
+    }
+    setCurrentView('details');
+  };
   const goToFavorites = () => setCurrentView('favorites');
   const goToAccount = () => setCurrentView('account');
   const goToAuth = (mode: 'login' | 'register') => {
@@ -37,62 +44,29 @@ function App() {
       {/* Header */}
       <header className="site-header">
         <div className="header-container">
-          <div 
-            className="site-logo" 
-            onClick={goToHome}
-          >
-            Ready2Cook
-          </div>
+          <div className="site-logo" onClick={goToHome}>Ready2Cook</div>
           <nav className="nav-menu">
-            <button 
-              onClick={goToHome} 
-              className="nav-link"
-            >
-              Accueil
-            </button>
-            <button 
-              onClick={goToFavorites}
-              className="nav-link"
-            >
-              Favoris
-            </button>
+            <button onClick={goToHome} className="nav-link">Accueil</button>
+            <button onClick={goToFavorites} className="nav-link">Favoris</button>
             {isLoggedIn ? (
               <>
-                <button
-                  onClick={goToAccount}
-                  className="nav-link"
-                >
+                <button onClick={goToAccount} className="nav-link">
                   <User className="inline-block mr-1" size={18} />
                   Mon Compte
                 </button>
-                <button
-                  onClick={handleLogout}
-                  className="nav-link"
-                >
-                  Déconnexion
-                </button>
+                <button onClick={handleLogout} className="nav-link">Déconnexion</button>
               </>
             ) : (
-              <button 
-                onClick={() => goToAuth('login')}
-                className="nav-link"
-              >
-                Connexion
-              </button>
+              <button onClick={() => goToAuth('login')} className="nav-link">Connexion</button>
             )}
           </nav>
-          <button 
-            className="primary-button"
-            onClick={goToSearch}
-          >
-            Trouver une recette
-          </button>
+          <button className="primary-button" onClick={goToSearch}>Trouver une recette</button>
         </div>
       </header>
 
       {/* Main Content */}
       {currentView === 'search' && <RecipeSearch onRecipeClick={goToDetails} />}
-      {currentView === 'details' && <RecipeDetails />}
+      {currentView === 'details' && <RecipeDetails recipeId={selectedRecipeId} />}
       {currentView === 'favorites' && <Favorites onRecipeClick={goToDetails} />}
       {currentView === 'auth' && <Auth mode={authMode} onLogin={handleLogin} />}
       {currentView === 'account' && <AccountSettings onLogout={handleLogout} />}
@@ -102,24 +76,16 @@ function App() {
           <section className="hero-section" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1543353071-873f17a7a088?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')" }}>
             <div className="hero-overlay"></div>
             <div className="hero-content">
-              <h1 className="hero-title">
-                Trouvez des recettes avec les ingrédients que vous avez déjà !
-              </h1>
+              <h1 className="hero-title">Trouvez des recettes avec les ingrédients que vous avez déjà !</h1>
               <div className="search-bar">
-                <input type="text" placeholder="Entrez vos ingrédients..." className="search-input" />
-                <button 
-                  className="search-button"
-                  onClick={goToSearch}
-                >
-                  Rechercher
-                </button>
+                <input type="text" placeholder="Entrez vos ingrédients..." className="search-input" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                <button className="search-button" onClick={() => {
+                  goToSearch();
+                  const event = new CustomEvent('app-search', { detail: searchQuery });
+                  window.dispatchEvent(event);
+                }}>Rechercher</button>
               </div>
-              <button 
-                className="secondary-button"
-                onClick={goToSearch}
-              >
-                Explorer les recettes populaires 👀
-              </button>
+              <button className="secondary-button" onClick={goToSearch}>Explorer les recettes populaires 👀</button>
             </div>
           </section>
 
@@ -199,15 +165,9 @@ function App() {
                 <a href="#" className="footer-link">Contact</a>
               </div>
               <div className="footer-social">
-                <a href="#" className="social-link">
-                  <Facebook size={24} />
-                </a>
-                <a href="#" className="social-link">
-                  <Twitter size={24} />
-                </a>
-                <a href="#" className="social-link">
-                  <Instagram size={24} />
-                </a>
+                <a href="#" className="social-link"><Facebook size={24} /></a>
+                <a href="#" className="social-link"><Twitter size={24} /></a>
+                <a href="#" className="social-link"><Instagram size={24} /></a>
               </div>
             </div>
           </footer>

@@ -149,3 +149,17 @@
     opacity: 0;
     overflow: hidden;
 }
+.step-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.step-details.expanded {
+  max-height: 500px; /* Ajustez la hauteur en fonction de vos besoins */
+}
+
+.step-details.collapsed {
+  max-height: 0;
+}
+
