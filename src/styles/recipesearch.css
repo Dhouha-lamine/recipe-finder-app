@@ -260,3 +260,23 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
+/* Ajoutez ce style à la fin de votre fichier CSS */
+
+.data-source-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--orange-100);
+  color: var(--orange-700);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+  max-width: 800px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.data-source-indicator svg {
+  margin-right: 0.5rem;
+}

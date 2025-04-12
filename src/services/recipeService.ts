@@ -60,12 +60,46 @@ export const fetchRecipes = async (
     return cachedData
   }
 
+  // Récupérer d'abord toutes les recettes locales filtrées
+  const localData = await getLocalRecipes(query, filters)
+
+  // Calculer le nombre total de pages pour les recettes locales
+  const localTotalPages = Math.ceil(localData.totalResults / resultsPerPage)
+
+  // Si la page demandée est supérieure à 1, vérifier si elle correspond à une page de recettes locales
+  if (page > 1) {
+    // La page 2 correspond à la première page des recettes locales
+    const localPageIndex = page - 2
+
+    if (localPageIndex >= 0 && localPageIndex < localTotalPages) {
+      // Cette page contient des recettes locales
+      const startIndex = localPageIndex * resultsPerPage
+      const endIndex = startIndex + resultsPerPage
+
+      const paginatedLocalRecipes = localData.results.slice(startIndex, endIndex)
+
+      const result = {
+        results: paginatedLocalRecipes,
+        totalResults: localData.totalResults + resultsPerPage, // Ajouter le nombre de recettes API (page 1)
+        source: "local",
+        currentPage: page,
+      }
+
+      // Sauvegarder dans le cache
+      saveToCache(cacheKey, result)
+
+      return result
+    }
+  }
+
+  // Si nous sommes sur la page 1 ou si la page demandée ne correspond pas à une page de recettes locales,
+  // récupérer les recettes de l'API
   const API_KEY = "b89c88a166b3499db06e06a3e96c9957"
   const URL = "https://api.spoonacular.com/recipes/complexSearch"
 
   try {
     // Construire l'URL avec les filtres
-    let apiUrl = `${URL}?query=${query}&apiKey=${API_KEY}&number=${resultsPerPage}&offset=${(page - 1) * resultsPerPage}`
+    let apiUrl = `${URL}?query=${query}&apiKey=${API_KEY}&number=${resultsPerPage}`
 
     if (filters.vegetarian) apiUrl += "&diet=vegetarian"
     if (filters.vegan) apiUrl += "&diet=vegan"
@@ -76,16 +110,35 @@ export const fetchRecipes = async (
     // Vérifier si l'API a atteint sa limite
     if (!response.ok) {
       if (hasReachedApiLimit(response)) {
-        console.log("API limit reached, using local data")
-        return await getLocalRecipes(query, filters, page, resultsPerPage)
+        console.log("API limit reached, using local data for first page")
+        // Si l'API a atteint sa limite, utiliser les premières recettes locales pour la page 1
+        const firstPageLocalRecipes = localData.results.slice(0, resultsPerPage)
+
+        const result = {
+          results: firstPageLocalRecipes,
+          totalResults: localData.totalResults,
+          source: "local",
+          currentPage: page,
+        }
+
+        // Sauvegarder dans le cache
+        saveToCache(cacheKey, result)
+
+        return result
       }
       throw new Error(`Erreur API: ${response.status}`)
     }
 
     const data = await response.json()
+
+    // Calculer le nombre total de résultats (API + local)
+    const totalResults = data.totalResults + localData.totalResults
+
     const result = {
       ...data,
+      totalResults: totalResults,
       source: "api",
+      currentPage: page,
     }
 
     // Sauvegarder dans le cache
@@ -94,8 +147,20 @@ export const fetchRecipes = async (
     return result
   } catch (error) {
     console.error("Erreur lors de la récupération des recettes:", error)
-    // En cas d'erreur, utiliser les données locales
-    return await getLocalRecipes(query, filters, page, resultsPerPage)
+    // En cas d'erreur, utiliser les données locales pour la première page
+    const firstPageLocalRecipes = localData.results.slice(0, resultsPerPage)
+
+    const result = {
+      results: firstPageLocalRecipes,
+      totalResults: localData.totalResults,
+      source: "local",
+      currentPage: page,
+    }
+
+    // Sauvegarder dans le cache
+    saveToCache(cacheKey, result)
+
+    return result
   }
 }
 
@@ -109,6 +174,21 @@ export const fetchRecipeDetails = async (recipeId: number) => {
     return cachedData
   }
 
+  // Vérifier d'abord si la recette existe dans les données locales
+  const localRecipe = typedLocalRecipes.find((r) => r.id === recipeId)
+  if (localRecipe) {
+    const result = {
+      ...localRecipe,
+      source: "local",
+    }
+
+    // Sauvegarder dans le cache
+    saveToCache(cacheKey, result)
+
+    return result
+  }
+
+  // Si la recette n'est pas trouvée localement, essayer l'API
   const API_KEY = "b89c88a166b3499db06e06a3e96c9957"
 
   try {
@@ -117,8 +197,8 @@ export const fetchRecipeDetails = async (recipeId: number) => {
     // Vérifier si l'API a atteint sa limite
     if (!response.ok) {
       if (hasReachedApiLimit(response)) {
-        console.log("API limit reached, using local data")
-        return await getLocalRecipeDetails(recipeId)
+        console.log("API limit reached, but recipe not found locally")
+        return null
       }
       throw new Error(`Erreur API: ${response.status}`)
     }
@@ -135,17 +215,14 @@ export const fetchRecipeDetails = async (recipeId: number) => {
     return result
   } catch (error) {
     console.error("Erreur lors de la récupération des détails:", error)
-    // En cas d'erreur, utiliser les données locales
-    return await getLocalRecipeDetails(recipeId)
+    return null
   }
 }
 
-// Fonction pour filtrer les recettes locales (renommée pour éviter l'erreur de hook)
+// Fonction pour filtrer les recettes locales
 const getLocalRecipes = async (
   query: string,
   filters: { vegetarian: boolean; vegan: boolean; glutenFree: boolean },
-  page: number,
-  resultsPerPage: number,
 ) => {
   // Filtrer les recettes locales selon les critères
   const filteredRecipes = typedLocalRecipes.filter((recipe) => {
@@ -162,30 +239,8 @@ const getLocalRecipes = async (
     return true
   })
 
-  // Calculer la pagination
-  const startIndex = (page - 1) * resultsPerPage
-  const endIndex = startIndex + resultsPerPage
-  const paginatedRecipes = filteredRecipes.slice(startIndex, endIndex)
-
   return {
-    results: paginatedRecipes,
+    results: filteredRecipes,
     totalResults: filteredRecipes.length,
-    source: "local",
   }
-}
-
-// Fonction pour récupérer les détails d'une recette locale (renommée pour éviter l'erreur de hook)
-const getLocalRecipeDetails = async (recipeId: number) => {
-  // Chercher la recette dans les données locales
-  const recipe = typedLocalRecipes.find((r) => r.id === recipeId)
-
-  if (recipe) {
-    return {
-      ...recipe,
-      source: "local",
-    }
-  }
-
-  // Si la recette n'est pas trouvée, retourner un objet vide
-  return null
 }

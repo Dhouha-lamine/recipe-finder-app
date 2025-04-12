@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useState } from "react"; 
-import { Search, Clock, Heart } from "lucide-react"; 
+import { Search, Clock, Heart,Info } from "lucide-react"; 
 import "../styles/recipesearch.css"
 
 // Importez le service de recettes
@@ -20,9 +20,11 @@ interface SpoonacularRecipe {
 
 interface RecipeSearchProps {
   onRecipeClick: (recipeId: number) => void
+  initialQuery?: string
+  onQueryChange?: (query: string) => void
 }
 
-const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
+const RecipeSearch = ({ onRecipeClick, initialQuery = "", onQueryChange }: RecipeSearchProps) => {
   const [filters, setFilters] = useState({
     vegetarian: false,
     vegan: false,
@@ -31,18 +33,27 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
 
   const [favorites, setFavorites] = useState<number[]>([])
   const [recipes, setRecipes] = useState<SpoonacularRecipe[]>([])
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(initialQuery || "")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
+  const [dataSource, setDataSource] = useState<"api" | "local">("api")
   const resultsPerPage = 8
 
-  const API_KEY = "b89c88a166b3499db06e06a3e96c9957"
-  const URL = "https://api.spoonacular.com/recipes/complexSearch"
+  useEffect(() => {
+    if (initialQuery && initialQuery !== query) {
+      setQuery(initialQuery)
+      setCurrentPage(1)
+    }
+  }, [initialQuery, query])
 
-  // Ajoutez un état pour la source des données
-  const [dataSource, setDataSource] = useState<"api" | "local">("api")
+  const handleQueryChange = (newQuery: string) => {
+    setQuery(newQuery)
+    if (onQueryChange) {
+      onQueryChange(newQuery)
+    }
+  }
 
   const toggleFilter = (filter: keyof typeof filters) => {
     setFilters((prev) => ({ ...prev, [filter]: !prev[filter] }))
@@ -67,19 +78,7 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
     }
   }, [])
 
-  // Fonction pour construire l'URL avec les filtres
-  const buildApiUrl = () => {
-    let apiUrl = `${URL}?query=${query}&apiKey=${API_KEY}&number=${resultsPerPage}&offset=${(currentPage - 1) * resultsPerPage}`
-
-    // Ajouter les filtres actifs
-    if (filters.vegetarian) apiUrl += "&diet=vegetarian"
-    if (filters.vegan) apiUrl += "&diet=vegan"
-    if (filters.glutenFree) apiUrl += "&intolerances=gluten"
-
-    return apiUrl
-  }
-
-  // Remplacez la fonction fetchRecipes existante par celle-ci
+  // Fonction pour récupérer les recettes
   const fetchRecipesData = async () => {
     setIsLoading(true)
     setError(null)
@@ -90,10 +89,8 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
       setTotalResults(data.totalResults)
 
       // Déterminer la source des données
-      if (data.source === "local") {
-        setDataSource("local")
-      } else {
-        setDataSource("api")
+      if (data.source) {
+        setDataSource(data.source)
       }
     } catch (err) {
       console.error("Erreur lors de la récupération des recettes:", err)
@@ -102,6 +99,7 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
       setIsLoading(false)
     }
   }
+
   // Effectuer la recherche lorsque la requête ou les filtres changent
   useEffect(() => {
     fetchRecipesData()
@@ -120,7 +118,7 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
   // Générer les numéros de page à afficher
   const getPageNumbers = () => {
     const pages = []
-    const maxVisiblePages = 3
+    const maxVisiblePages = 5
 
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
@@ -143,6 +141,15 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
     fetchRecipesData()
   }
 
+  // Déterminer le message de source de données
+  const getSourceMessage = () => {
+    if (currentPage === 1) {
+      return "Recettes de l'API Spoonacular"
+    } else {
+      return "Recettes de votre collection personnelle"
+    }
+  }
+
   return (
     <div className="search-page">
       <h1 className="search-page-title">Recherche de Recettes</h1>
@@ -152,7 +159,7 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
         <form onSubmit={handleSearch} className="search-box">
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => handleQueryChange(e.target.value)}
             type="text"
             placeholder="Entrez un ingrédient ou un plat..."
             className="search-box-input"
@@ -182,6 +189,14 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
         ))}
       </div>
 
+      {/* Indicateur de source des données */}
+      <div className="data-source-indicator">
+        <Info size={16} className="mr-1" />
+        <span>
+          Page {currentPage}: {getSourceMessage()}
+        </span>
+      </div>
+
       {/* État de chargement */}
       {isLoading && (
         <div className="loading-container">
@@ -194,15 +209,6 @@ const RecipeSearch = ({ onRecipeClick }: RecipeSearchProps) => {
       {error && <div className="error-message">{error}</div>}
 
       {/* Grille de recettes */}
-      {!isLoading && !error && (
-        <div
-          className="data-source-indicator"
-          style={{ textAlign: "center", fontSize: "0.8rem", color: "gray", margin: "0.5rem 0" }}
-        >
-          Source des données: {dataSource === "api" ? "API Spoonacular" : "Fichiers JSON locaux"}
-        </div>
-      )}
-
       {!isLoading && !error && (
         <>
           {recipes.length === 0 ? (

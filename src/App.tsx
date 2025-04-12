@@ -12,10 +12,15 @@ function App() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState<number | undefined>(undefined);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("")
 
   const goToHome = () => setCurrentView('home');
-  const goToSearch = () => setCurrentView('search');
+  const goToSearch = (query?: string) => {
+    if (query !== undefined) {
+      setSearchQuery(query)
+    }
+    setCurrentView("search")
+  }
   const goToDetails = (recipeId?: number) => {
     if (recipeId) {
       setSelectedRecipeId(recipeId);
@@ -39,6 +44,20 @@ function App() {
     goToHome();
   };
 
+  const handleHomeSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    const input = (e.target as HTMLFormElement).querySelector('input')
+    if (input && input.value) {
+      goToSearch(input.value)
+    } else {
+      goToSearch()
+    }
+  }
+
+  const updateSearchQuery = (query: string) => {
+    setSearchQuery(query)
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -60,12 +79,13 @@ function App() {
               <button onClick={() => goToAuth('login')} className="nav-link">Connexion</button>
             )}
           </nav>
-          <button className="primary-button" onClick={goToSearch}>Trouver une recette</button>
+          <button className="primary-button" onClick={() => goToSearch()}>Trouver une recette</button>
         </div>
       </header>
 
       {/* Main Content */}
-      {currentView === 'search' && <RecipeSearch onRecipeClick={goToDetails} />}
+      {currentView === 'search' && <RecipeSearch onRecipeClick={goToDetails} initialQuery={searchQuery} onQueryChange={updateSearchQuery} 
+/> }
       {currentView === 'details' && <RecipeDetails recipeId={selectedRecipeId} />}
       {currentView === 'favorites' && <Favorites onRecipeClick={goToDetails} />}
       {currentView === 'auth' && <Auth mode={authMode} onLogin={handleLogin} />}
@@ -85,7 +105,7 @@ function App() {
                   window.dispatchEvent(event);
                 }}>Rechercher</button>
               </div>
-              <button className="secondary-button" onClick={goToSearch}>Explorer les recettes populaires 👀</button>
+              <button className="secondary-button" onClick={() => goToSearch("")}>Explorer les recettes populaires 👀</button>
             </div>
           </section>
 
@@ -148,7 +168,7 @@ function App() {
               <h2 className="cta-title">Prêt à découvrir de nouvelles recettes ?</h2>
               <button 
                 className="primary-button"
-                onClick={goToSearch}
+                onClick={() => goToSearch("")}
               >
                 Essayez maintenant
               </button>
