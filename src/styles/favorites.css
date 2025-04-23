@@ -1,134 +1,244 @@
- /* Favorites Page */
- .favorites-page {
-    min-height: 100vh;
-    background-color: var(--orange-50);
-    padding: 6rem 1.5rem 1.5rem;
-  }
-  
-  .favorites-title {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: var(--orange-600);
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .view-toggle {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
-  }
-  
-  .view-button {
-    padding: 0.5rem;
-    background-color: white;
-    color: var(--orange-500);
-  }
-  
-  .view-button.active {
-    background-color: var(--orange-500);
-    color: white;
-  }
-  
-  .view-button:first-child {
-    border-top-left-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
-  }
-  
-  .view-button:last-child {
-    border-top-right-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
-  }
-  
+/* Variables CSS */
+:root {
+  /* Couleurs Orange */
+  --orange-50: #fff7ed;
+  --orange-100: #ffedd5;
+  --orange-200: #fed7aa;
+  --orange-300: #fdba74;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --orange-800: #9a3412;
+  --orange-900: #7c2d12;
+
+  /* Couleurs Gris */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* Couleurs Rouge */
+  --red-50: #fef2f2;
+  --red-100: #fee2e2;
+  --red-200: #fecaca;
+  --red-300: #fca5a5;
+  --red-400: #f87171;
+  --red-500: #ef4444;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+  --red-800: #991b1b;
+  --red-900: #7f1d1d;
+}
+
+/* Favorites Page */
+.favorites-page {
+  min-height: 100vh;
+  background-color: var(--orange-50);
+  padding: 6rem 1.5rem 1.5rem;
+}
+
+.favorites-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--orange-600);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.view-button {
+  padding: 0.5rem;
+  background-color: white;
+  color: var(--orange-500);
+  border: 1px solid var(--orange-300);
+  cursor: pointer;
+}
+
+.view-button.active {
+  background-color: var(--orange-500);
+  color: white;
+  border-color: var(--orange-500);
+}
+
+.view-button:first-child {
+  border-top-left-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+}
+
+.view-button:last-child {
+  border-top-right-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.favorite-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.favorite-card:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-card.list {
+  display: flex;
+}
+
+.favorite-card.list .favorite-image {
+  width: 33.333333%;
+}
+
+.favorite-image {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.favorite-card.list .favorite-image {
+  height: 100%;
+}
+
+.favorite-content {
+  padding: 1rem;
+}
+
+.favorite-card.list .favorite-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.favorite-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 0.5rem;
+}
+
+.favorite-info {
+  margin-bottom: 0.5rem;
+}
+
+.recipe-time {
+  display: flex;
+  align-items: center;
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+.recipe-time svg {
+  margin-right: 0.25rem;
+}
+
+.favorite-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.favorite-action {
+  transition: color 0.3s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.favorite-action.delete {
+  color: var(--red-500);
+}
+
+.favorite-action.delete:hover {
+  color: var(--red-600);
+}
+
+.favorite-action.share {
+  color: var(--orange-500);
+}
+
+.favorite-action.share:hover {
+  color: var(--orange-600);
+}
+
+.favorite-heart {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--red-500);
+}
+
+.empty-favorites {
+  text-align: center;
+  color: var(--gray-600);
+  margin-top: 2rem;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--orange-600);
+  font-size: 1.125rem;
+}
+
+/* Utilitaires */
+.text-red-500 {
+  color: var(--red-500);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
   .favorites-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
-  
-  .favorites-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+
+  .favorites-title {
+    font-size: 1.5rem;
   }
-  
-  .favorite-card {
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: box-shadow 0.3s;
-    cursor: pointer;
-  }
-  
-  .favorite-card:hover {
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-  }
-  
+
   .favorite-card.list {
-    display: flex;
+    flex-direction: column;
   }
-  
+
   .favorite-card.list .favorite-image {
-    width: 33.333333%;
-  }
-  
-  .favorite-image {
     width: 100%;
     height: 12rem;
-    object-fit: cover;
   }
-  
-  .favorite-card.list .favorite-image {
-    height: 100%;
-  }
-  
-  .favorite-content {
-    padding: 1rem;
-  }
-  
-  .favorite-card.list .favorite-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  .favorite-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--gray-800);
-    margin-bottom: 0.5rem;
-  }
-  
-  .favorite-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .favorite-action {
-    transition: color 0.3s;
-  }
-  
-  .favorite-action.delete {
-    color: var(--red-500);
-  }
-  
-  .favorite-action.delete:hover {
-    color: var(--red-600);
-  }
-  
-  .favorite-action.share {
-    color: var(--orange-500);
-  }
-  
-  .favorite-action.share:hover {
-    color: var(--orange-600);
-  }
-  
-  .empty-favorites {
-    text-align: center;
-    color: var(--gray-600);
-    margin-top: 2rem;
-  }
+}
