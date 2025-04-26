@@ -46,7 +46,7 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
     const fetchUserData = async () => {
       const parseUser = Parse.User.current()
       if (parseUser) {
-        setCurrentUser(parseUser)
+        setCurrentUser(parseUser as unknown as Parse.User)
 
         // Récupérer les données de l'utilisateur
         setUsername(parseUser.get("username") || "")
@@ -62,7 +62,7 @@ const AccountSettings = ({ onLogout }: AccountSettingsProps) => {
           const userPreference = await query.first()
 
           if (userPreference) {
-            setUserPreferenceObj(userPreference)
+            setUserPreferenceObj(userPreference as unknown as Parse.Object)
             setPreferences({
               vegetarian: userPreference.get("vegetarian") || false,
               vegan: userPreference.get("vegan") || false,

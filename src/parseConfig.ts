@@ -1,4 +1,4 @@
-import Parse from 'parse';
+import Parse from "parse/node";
 
 // Vérifier si les variables d'environnement sont définies
 console.log('REACT_APP_PARSE_APPLICATION_ID:', process.env.REACT_APP_PARSE_APPLICATION_ID);
@@ -15,10 +15,12 @@ if (
 }
 
 // Initialisation de Parse avec les paramètres Back4App
-Parse.initialize(
-  process.env.REACT_APP_PARSE_APPLICATION_ID!,
-  process.env.REACT_APP_PARSE_JAVASCRIPT_KEY!
-);
-Parse.serverURL = process.env.REACT_APP_PARSE_SERVER_URL!;
+if (!Parse.applicationId) {
+  Parse.initialize(
+    process.env.REACT_APP_PARSE_APPLICATION_ID!,
+    process.env.REACT_APP_PARSE_JAVASCRIPT_KEY!
+  );
+  Parse.serverURL = process.env.REACT_APP_PARSE_SERVER_URL!;
+}
 
 export default Parse;

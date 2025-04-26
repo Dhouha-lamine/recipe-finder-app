@@ -2,7 +2,7 @@ Cypress.Commands.add("mockSpoonacular", () => {
     cy.intercept("GET", "https://api.spoonacular.com/recipes/*/information*", {
       statusCode: 200,
       body: {
-        id: 639747,
+        id: 715415,
         title: "Red Lentil Soup with Chicken and Turnips",
         description: "A delicious soup recipe.",
         time: "55 minutes",

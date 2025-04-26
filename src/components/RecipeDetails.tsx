@@ -81,7 +81,7 @@ const RecipeDetails = ({ recipeId }: RecipeDetailsProps) => {
             description: cleanedDescription,
           });
 
-          if (authService.isAuthenticated()) {
+          if (await authService.isAuthenticated()) {
             const isFavorite = await authService.isRecipeFavorite(recipeId);
             console.log("Est dans les favoris:", isFavorite);
             setFavorite(isFavorite);
@@ -110,7 +110,7 @@ const RecipeDetails = ({ recipeId }: RecipeDetailsProps) => {
     }
 
     try {
-      const isAuthenticated = authService.isAuthenticated();
+      const isAuthenticated = await authService.isAuthenticated();
       console.log("Utilisateur authentifié:", isAuthenticated);
       if (isAuthenticated) {
         console.log("Current favorite state:", favorite);
