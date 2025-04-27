@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     const user = Parse.User.current()
     if (user) {
-      setCurrentUser(user)
+      setCurrentUser(user as unknown as Parse.User)
       setIsLoggedIn(true)
     }
   }, [])
@@ -43,7 +43,7 @@ function App() {
 
   const handleLogin = () => {
     const user = Parse.User.current()
-    setCurrentUser(user)
+    setCurrentUser(user as unknown as Parse.User)
     setIsLoggedIn(true)
     goToHome()
   }
