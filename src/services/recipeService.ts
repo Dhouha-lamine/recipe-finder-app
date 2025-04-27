@@ -4,20 +4,25 @@ import { spoonacularService } from "./spoonacularService"
 import { jsonImportService } from "./jsonImportService"
 
 // Convertir un objet Parse en objet Recipe
-const parseObjectToRecipe = (parseObject: Parse.Object): Recipe => {
-  return {
-    id: parseObject.id,
-    objectId: parseObject.id,
-    title: parseObject.get("title"),
-    description: parseObject.get("description"),
-    time: parseObject.get("time"),
-    servings: parseObject.get("servings"),
-    image: parseObject.get("image"),
-    ingredients: parseObject.get("ingredients"),
-    steps: parseObject.get("steps"),
-    tags: parseObject.get("tags") || [],
-  }
+interface ParseObject {
+  id?: string;
+  get(key: string): any;
 }
+
+const parseObjectToRecipe = (parseObject: ParseObject): Recipe => {
+  return {
+    id: parseObject.id ?? undefined,
+    objectId: parseObject.id,
+    title: parseObject.get("title") || "",
+    description: parseObject.get("description") || "",
+    time: parseObject.get("time") || "",
+    servings: parseObject.get("servings") || 0,
+    image: parseObject.get("image") || "",
+    ingredients: parseObject.get("ingredients") || [],
+    steps: parseObject.get("steps") || [],
+    tags: parseObject.get("tags") || [],
+  };
+};
 
 export const recipeService = {
   // Récupérer toutes les recettes depuis Parse

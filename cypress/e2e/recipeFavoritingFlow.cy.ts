@@ -1,44 +1,29 @@
+/// <reference types="cypress" />
 describe("Recipe Favoriting Flow", () => {
   // Test avec utilisateur connecté
   describe("Utilisateur connecté", () => {
     beforeEach(() => {
       cy.log("Setting up mocks");
       cy.mockSpoonacular();
-      cy.intercept("GET", "**/recipes/715415/information**", {
-        statusCode: 200,
-        body: {
-          id: 715415,
-          title: "Test Recipe 715415",
-          image: "https://example.com/image.jpg",
-          readyInMinutes: 30,
-          servings: 4,
-        },
-      }).as("getSpoonacularRecipe");
-
-      cy.intercept("POST", "**/functions/getRecipeById", {
-        statusCode: 200,
-        body: {
-          result: {
-            objectId: "715415",
-            title: "Test Recipe 715415",
-            description: "A test recipe",
-            time: "30 minutes",
-            servings: 4,
-            image: "https://example.com/image.jpg",
-            ingredients: ["ing1", "ing2"],
-            steps: ["step1", "step2"],
-            tags: ["tag1"],
-          },
-        },
-      }).as("getParseRecipe");
-
       cy.log("Logging in user");
       cy.loginUser("dhouha.lamin@gmail.com", "1972004d");
     });
 
     it("permet d'ajouter et retirer une recette des favoris", () => {
-      cy.log("Accès à la page de détails de la recette");
-      cy.visit("/recipes/details/715415");
+      cy.log("Navigating to RecipeSearch page");
+      cy.visit("/");
+      cy.get("button.primary-button").contains("Trouver une recette").click();
+      cy.url().should("include", "/search");
+
+      cy.log("Searching for a recipe");
+      cy.get('input[type="search"]').type("test recipe{enter}");
+      cy.wait("@searchSpoonacularRecipes");
+      cy.wait("@saveRecipe");
+      cy.wait("@getParseRecipe");
+
+      cy.log("Clicking on the first recipe result");
+      cy.contains(".recipe-card", "Test Recipe 123").click();
+      cy.url().should("include", "/recipes/details/parseRecipe123");
       cy.wait("@getParseRecipe");
       cy.wait("@getSpoonacularRecipe");
       cy.get(".recipe-details-title").should("be.visible");
@@ -70,13 +55,13 @@ describe("Recipe Favoriting Flow", () => {
       cy.log("Vérification dans la page des favoris");
       cy.visit("/favorites");
       cy.wait(2000); // Replace with proper API wait if possible
-      cy.contains(".recipe-title", "Test Recipe 715415").should("be.visible");
+      cy.contains(".recipe-title", "Test Recipe 123").should("be.visible");
       cy.screenshot("favorites-page");
 
       cy.log("Test de retrait des favoris");
-      cy.visit("/recipes/details/715415");
+      cy.visit("/recipes/details/parseRecipe123");
       cy.wait("@getParseRecipe");
-      cy.wait("@getSpoonacularRecipe");
+      cy.wait("@get МОSpoonacularRecipe");
 
       cy.contains("button", "Ajouté aux favoris").as("unfavoriteButton").should("be.visible");
       cy.get("@unfavoriteButton").click();
@@ -92,7 +77,7 @@ describe("Recipe Favoriting Flow", () => {
       cy.log("Vérification finale dans la page des favoris");
       cy.visit("/favorites");
       cy.wait(2000); // Replace with proper API wait if possible
-      cy.contains(".recipe-title", "Test Recipe 715415").should("not.exist");
+      cy.contains(".recipe-title", "Test Recipe 123").should("not.exist");
       cy.contains("Vous n'avez pas encore de recettes favorites").should("be.visible");
       cy.screenshot("favorites-page-after-removal");
     });
@@ -103,22 +88,37 @@ describe("Recipe Favoriting Flow", () => {
         body: {
           result: {
             // No objectId (id) field
-            title: "Test Recipe 715415",
+            title: "Test Recipe 123",
             description: "A test recipe",
             time: "30 minutes",
             servings: 4,
             image: "https://example.com/image.jpg",
             ingredients: ["ing1", "ing2"],
             steps: ["step1", "step2"],
-            tags: ["tag1"],
+            tags: ["test"],
           },
         },
       }).as("getParseRecipe");
 
-      cy.visit("/recipes/details/715415");
+      cy.log("Navigating to RecipeSearch page");
+      cy.visit("/");
+      cy.get("button.primary-button").contains("Trouver une recette").click();
+      cy.url().should("include", "/search");
+
+      cy.log("Searching for a recipe");
+      cy.get('input[type="search"]').type("test recipe{enter}");
+      cy.wait("@searchSpoonacularRecipes");
+      cy.wait("@saveRecipe");
       cy.wait("@getParseRecipe");
-      cy.wait("@getSpoonacularRecipe");
-      cy.get(".recipe-details-title").should("be.visible");
+
+      cy.log("Clicking on the first recipe result");
+      cy.contains(".recipe-card", "Test Recipe 123").click();
+      cy.url().should("include", "/recipes/details/parseRecipe123");
+      cy.wait("@getParseRecipe");
+
+      cy.on("window:alert", (text) => {
+        expect(text).to.equal("Erreur : ID de la recette non défini.");
+      });
     });
   });
 
@@ -135,11 +135,22 @@ describe("Recipe Favoriting Flow", () => {
     });
 
     it("demande à l'utilisateur de se connecter pour ajouter aux favoris", () => {
-      cy.log("Accès à la page de détails sans être connecté");
-      cy.visit("/recipes/details/715415");
-      cy.wait(2000);
+      cy.log("Navigating to RecipeSearch page");
+      cy.get("button.primary-button").contains("Trouver une recette").click();
+      cy.url().should("include", "/search");
 
-      cy.url().should("include", "/recipes/details/715415");
+      cy.log("Searching for a recipe");
+      cy.get('input[type="search"]').type("test recipe{enter}");
+      cy.wait("@searchSpoonacularRecipes");
+      cy.wait("@saveRecipe");
+      cy.wait("@getParseRecipe");
+
+      cy.log("Clicking on the first recipe result");
+      cy.contains(".recipe-card", "Test Recipe 123").click();
+      cy.url().should("include", "/recipes/details/parseRecipe123");
+      cy.wait("@getParseRecipe");
+      cy.wait("@getSpoonacularRecipe");
+
       cy.get(".recipe-details-title").should("be.visible");
       cy.screenshot("recipe-page-not-logged-in");
 
