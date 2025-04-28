@@ -118,7 +118,7 @@ export const recipeService = {
   // Importer des recettes depuis un fichier JSON et les sauvegarder dans Parse
   async importRecipesFromJsonFile(filePath: string): Promise<number> {
     try {
-      const jsonData = await jsonImportService.loadJsonFile(filePath)
+      const jsonData = await jsonImportService.loadJsonFile("/recipes.json")
       return await jsonImportService.importRecipesFromJson(jsonData)
     } catch (error) {
       console.error("Erreur lors de l'importation des recettes depuis le fichier JSON:", error)

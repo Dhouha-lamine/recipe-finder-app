@@ -1,6 +1,6 @@
 import type { Recipe } from "../types/recipe"
 
-const API_KEY = "41551a0f9aaf4a5b929d8cedc3b82eac"
+const API_KEY = "15bc0a1122fe460ca326ba26268de289"
 const BASE_URL = "https://api.spoonacular.com"
 
 // Interface pour les recettes de Spoonacular
