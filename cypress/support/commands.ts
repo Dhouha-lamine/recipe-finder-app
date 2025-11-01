@@ -156,3 +156,9 @@ Cypress.Commands.add("checkFavoriteStatus", (recipeId, expectedStatus) => {
     cy.contains("button", "Ajouter aux favoris").should("be.visible");
   }
 });
+Cypress.Commands.add("loginUser", (email: string, password: string) => {
+  cy.request("POST", "/api/login", { email, password }).then((response) => {
+    expect(response.status).to.eq(200);
+    cy.setCookie("authToken", response.body.token);
+  });
+});
